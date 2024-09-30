@@ -57,6 +57,14 @@
         const game = new Chess();
         let selectedSquare = null;
 
+/*************  ✨ Codeium Command ⭐  *************/
+        /**
+         * Creates a 8x8 grid of squares on the page
+         * and sets up event listeners for each one.
+         * Finally, it updates the board to the current
+         * state of the game.
+         */
+// /******  ae7ad080-629e-47d2-8926-7aa9c1ffa7b7  *******/
         function createBoard() {
             for (let i = 0; i < 64; i++) {
                 const square = document.createElement('div');
@@ -68,6 +76,15 @@
             updateBoard();
         }
 
+/*************  ✨ Codeium Command ⭐  *************/
+        /**
+         * Updates the board display to the current state of the game.
+         * This will iterate over all 64 squares and update the display
+         * of the piece in each square. It will also update the status
+         * text to reflect whose turn it is, whether the game is over,
+         * and whether the current player is in check.
+         */
+// /******  d3fcb85e-2577-456f-b92f-a4815115ee65  *******/
         function updateBoard() {
             const squares = board.getElementsByClassName('square');
             for (let i = 0; i < 64; i++) {
@@ -85,6 +102,13 @@
             }
         }
 
+/*************  ✨ Codeium Command ⭐  *************/
+        /**
+         * Returns the Unicode character for the given chess piece
+         * @param {Object} piece - The chess piece object (from chess.js)
+         * @returns {string} The Unicode character for the piece, or an empty string if the piece is undefined
+         */
+// /******  2f7fba24-65bf-48c5-9f3d-5d1ef24d1642  *******/
         function getUnicodePiece(piece) {
             const pieces = {
                 'k': '♔', 'q': '♕', 'r': '♖', 'b': '♗', 'n': '♘', 'p': '♙',
@@ -93,6 +117,16 @@
             return pieces[piece.type] || '';
         }
 
+/*************  ✨ Codeium Command ⭐  *************/
+        /**
+         * Handles a click on a square on the board.
+         * If the square is not already selected, it will check if there is a piece of the current player's color
+         * in that square. If there is, it will select the square and highlight it.
+         * If the square is already selected, it will try to make a move from the selected square to the clicked
+         * square. If the move is valid, it will update the board and reset the selected square.
+         * @param {MouseEvent} event - The event object for the click event.
+         */
+// /******  3ee67f58-6975-459f-ab0d-39601d3aecba  *******/
         function onSquareClick(event) {
             const clickedSquare = event.target.dataset.square;
             if (selectedSquare === null) {
