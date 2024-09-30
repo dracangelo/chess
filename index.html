@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chess Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #chessboard {
+            width: 400px;
+            height: 400px;
+            border: 2px solid #333;
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+            float: left;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        .white {
+            background-color: #f0d9b5;
+        }
+        .black {
+            background-color: #b58863;
+        }
+        .selected {
+            background-color: #7fb3d5;
+        }
+        #status {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="chessboard"></div>
+        <div id="status"></div>
+    </div>
+    <script>
+        const board = document.getElementById('chessboard');
+        const statusDisplay = document.getElementById('status');
+        const game = new Chess();
+        let selectedSquare = null;
+
+        function createBoard() {
+            for (let i = 0; i < 64; i++) {
+                const square = document.createElement('div');
+                square.className = `square ${(i + Math.floor(i / 8)) % 2 === 0 ? 'white' : 'black'}`;
+                square.dataset.square = String.fromCharCode(97 + (i % 8)) + (8 - Math.floor(i / 8));
+                square.addEventListener('click', onSquareClick);
+                board.appendChild(square);
+            }
+            updateBoard();
+        }
+
+        function updateBoard() {
+            const squares = board.getElementsByClassName('square');
+            for (let i = 0; i < 64; i++) {
+                const square = squares[i];
+                const piece = game.get(square.dataset.square);
+                square.textContent = piece ? getUnicodePiece(piece) : '';
+            }
+            statusDisplay.textContent = `${game.turn() === 'w' ? 'White' : 'Black'} to move`;
+            if (game.in_checkmate()) {
+                statusDisplay.textContent = `Checkmate! ${game.turn() === 'w' ? 'Black' : 'White'} wins!`;
+            } else if (game.in_draw()) {
+                statusDisplay.textContent = "Game Over! It's a draw!";
+            } else if (game.in_check()) {
+                statusDisplay.textContent += " (Check!)";
+            }
+        }
+
+        function getUnicodePiece(piece) {
+            const pieces = {
+                'k': '♔', 'q': '♕', 'r': '♖', 'b': '♗', 'n': '♘', 'p': '♙',
+                'K': '♚', 'Q': '♛', 'R': '♜', 'B': '♝', 'N': '♞', 'P': '♟'
+            };
+            return pieces[piece.type] || '';
+        }
+
+        function onSquareClick(event) {
+            const clickedSquare = event.target.dataset.square;
+            if (selectedSquare === null) {
+                const piece = game.get(clickedSquare);
+                if (piece && piece.color === game.turn()) {
+                    selectedSquare = clickedSquare;
+                    event.target.classList.add('selected');
+                }
+            } else {
+                const move = game.move({
+                    from: selectedSquare,
+                    to: clickedSquare,
+                    promotion: 'q'
+                });
+
+                if (move) {
+                    updateBoard();
+                }
+
+                document.querySelector(`.square[data-square="${selectedSquare}"]`).classList.remove('selected');
+                selectedSquare = null;
+            }
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
